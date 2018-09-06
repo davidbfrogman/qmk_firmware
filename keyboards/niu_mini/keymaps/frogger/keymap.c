@@ -104,7 +104,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    * |      |      |      |      |      |             |      |      |VolDo |Mute  |Vol U |
    * `-----------------------------------------------------------------------------------'
    HUE Increase = HUI
-   Saturatoin Increase = SAI
+   Saturation Increase = SAI
    */ 
   [_RGB] = LAYOUT_planck_mit(
     RESET, RGB_TOG, RGB_MOD, RGB_HUD, RGB_HUI, RGB_SAI, RGB_SAD, _______, _______, _______, _______, _______,
