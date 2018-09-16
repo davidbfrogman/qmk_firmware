@@ -11,9 +11,9 @@ enum layers {
   _RGB
 };
 
-enum keycodes {
-  LOWER,
-  RAISE
+enum custom_keycodes {
+    FMT_A = SAFE_RANGE,
+    MACRO_2
 };
 
 
@@ -23,7 +23,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	 * ,-----------------------------------------------------------------------------------.
 	 * | Esc  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  | Bksp |
 	 * |------+------+------+------+------+-------------+------+------+------+------+------|
-	 * | Tab  |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |  '   |  
+	 * |Tab/Lo|   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |  '   |  
 	 * |------+------+------+------+------+------|------+------+------+------+------+------|
 	 * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |Enter |
 	 * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -31,10 +31,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	 * `-----------------------------------------------------------------------------------'
 	 */
 	[_QWERTY] = LAYOUT_planck_mit(
-		KC_GESC,  KC_Q,    KC_W,    KC_E,    KC_R,  KC_T,   KC_Y,   KC_U,  KC_I,    KC_O,    KC_P,      KC_BSPC,
-		LT(_LOWER, KC_TAB),  KC_A,    KC_S,    KC_D,    KC_F,  KC_G,   KC_H,   KC_J,  KC_K,    KC_L,    KC_SCLN,   KC_QUOT,
-		KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,  KC_B,   KC_N,   KC_M,  KC_COMM, KC_DOT,  KC_SLSH,   KC_ENT,
-		KC_LCTRL, KC_LGUI, KC_LALT, MO(_NUMPAD), LOWER,KC_SPC,RAISE,KC_LPRN,  KC_LCBR, KC_RCBR,   KC_RPRN
+		KC_GESC,             KC_Q,     KC_W,    KC_E,        KC_R,   KC_T,   KC_Y,   KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
+		LT(_LOWER, KC_TAB),  KC_A,     KC_S,    KC_D,        KC_F,   KC_G,   KC_H,   KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+		KC_LSFT,             KC_Z,     KC_X,    KC_C,        KC_V,   KC_B,   KC_N,   KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT,
+		KC_LCTRL,            KC_LGUI,  KC_LALT, MO(_NUMPAD), _LOWER,     KC_SPC,     _RAISE,  KC_LPRN, KC_LCBR, KC_RCBR, KC_RPRN
   ),
 
 
@@ -82,16 +82,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	 * ,-----------------------------------------------------------------------------------.
 	 * |      |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  |      |
 	 * |------+------+------+------+------+------+------+------+------+------+------+------|
-	 * |      |      | save |      |      |      |      |   4  |   5  |   6  |      |      |
+	 * |      |      | save |      |Format|      |      |   4  |   5  |   6  |      |      |
 	 * |------+------+------+------+------+------|------+------+------+------+------+------|
 	 * |      |      |      |      |      |      |      |   1  |   2  |   3  |      |      |
 	 * |------+------+------+------+------+------+------+------+------+------+------+------|
-	 * |      |      |      |      |      |      |      |      |   0  |      |      |      |
+	 * |      |      |      |      |      |             |      |   0  |      |      |      |
 	 * `-----------------------------------------------------------------------------------'
 	 */ 
 	[_NUMPAD] = LAYOUT_planck_mit(
 		_______, KC_1,    KC_2,          KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,
-		_______, _______, LCTL(S(KC_S)), _______, _______, _______, _______, KC_4,    KC_5,    KC_6, _______, KC_DEL		,
+		_______, _______, LCTL(S(KC_S)), _______, FMT_A,   _______, _______, KC_4,    KC_5,    KC_6, _______, KC_DEL		,
 		_______, _______, _______,       _______, _______, _______, _______, KC_1,    KC_2,    KC_3, _______, _______,
 		_______, _______, _______,       _______, _______,     _______,   _______,    KC_0, _______, _______, _______
   ),
@@ -121,7 +121,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case LOWER:
+    case _LOWER:
       if (record->event.pressed) {
         layer_on(_LOWER);
         update_tri_layer(_LOWER, _RAISE, _RGB);
@@ -131,7 +131,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
-    case RAISE:
+    case _RAISE:
       if (record->event.pressed) {
         layer_on(_RAISE);
         update_tri_layer(_LOWER, _RAISE, _RGB);
@@ -141,6 +141,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
+	 case FMT_A:
+		SEND_STRING(SS_LGUI("akf"));
+		return false;
+		break;
   }
   return true;
 }
