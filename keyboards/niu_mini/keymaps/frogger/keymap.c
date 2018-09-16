@@ -161,15 +161,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
       break;
 	 case FMT_A:
-		SEND_STRING(SS_LGUI("akf"));
+		if (record->event.pressed){
+			SEND_STRING(SS_LGUI("akf")SS_TAP(X_ESCAPE));
+		}
 		return false;
 		break;
 	case CMT_CD:
-		SEND_STRING(SS_LGUI("k")SS_LGUI("c"));
+		 if (record->event.pressed){
+			SEND_STRING(SS_LGUI("kc"));
+		 }
 		return false;
 		break;
 	case UNCMT_CD:
-		SEND_STRING(SS_LGUI("k")SS_LGUI("u"));
+		 if (record->event.pressed){
+			SEND_STRING(SS_LGUI("ku"));
+		 }
 		return false;
 		break;
   }
